@@ -15,6 +15,7 @@ import com.eazybytes.loans.model.Loans;
 import com.eazybytes.loans.repository.LoansRepository;
 
 /**
+ * Optimized by Pierrot on 8/12/2022
  * @author Eazy Bytes
  *
  */
@@ -27,13 +28,7 @@ public class LoansController {
 
 	@PostMapping("/myLoans")
 	public List<Loans> getLoansDetails(@RequestBody Customer customer) {
-		List<Loans> loans = loansRepository.findByCustomerIdOrderByStartDtDesc(customer.getCustomerId());
-		if (loans != null) {
-			return loans;
-		} else {
-			return null;
-		}
-
+		return loansRepository.findByCustomerIdOrderByStartDtDesc(customer.getCustomerId());
 	}
 
 }

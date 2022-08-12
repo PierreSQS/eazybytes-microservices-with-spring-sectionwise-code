@@ -12,6 +12,6 @@ public class RequestContext {
 
 	public static final String CORRELATION_ID = "eazybank-correlation-id";
 
-	private String correlationId = new String();
+	private String correlationId;
 
 }
