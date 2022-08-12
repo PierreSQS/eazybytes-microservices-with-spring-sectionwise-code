@@ -14,8 +14,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>cards</name>
-	<description>Microservice for Cards</description>
+	<description>Sect4:Pierrot Microservice for Cards</description>
 	<properties>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
