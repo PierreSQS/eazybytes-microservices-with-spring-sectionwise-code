@@ -5,7 +5,6 @@ package com.eazybytes.loans.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +22,11 @@ import com.eazybytes.loans.repository.LoansRepository;
 @RestController
 public class LoansController {
 
-	@Autowired
-	private LoansRepository loansRepository;
+	private final LoansRepository loansRepository;
+
+	public LoansController(LoansRepository loansRepository) {
+		this.loansRepository = loansRepository;
+	}
 
 	@PostMapping("/myLoans")
 	public List<Loans> getLoansDetails(@RequestBody Customer customer) {
