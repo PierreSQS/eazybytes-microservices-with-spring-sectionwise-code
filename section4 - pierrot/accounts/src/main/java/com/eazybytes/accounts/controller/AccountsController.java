@@ -13,6 +13,7 @@ import com.eazybytes.accounts.model.Customer;
 import com.eazybytes.accounts.repository.AccountsRepository;
 
 /**
+ * Optimized by Pierrot on 8/12/2022
  * @author Eazy Bytes
  *
  */
@@ -26,13 +27,7 @@ public class AccountsController {
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
 
-		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		if (accounts != null) {
-			return accounts;
-		} else {
-			return null;
-		}
-
+		return accountsRepository.findByCustomerId(customer.getCustomerId());
 	}
 
 }
