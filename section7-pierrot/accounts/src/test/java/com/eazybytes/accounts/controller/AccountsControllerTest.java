@@ -1,5 +1,6 @@
 package com.eazybytes.accounts.controller;
 
+import com.eazybytes.accounts.config.AccountServiceConfig;
 import com.eazybytes.accounts.model.Accounts;
 import com.eazybytes.accounts.model.Customer;
 import com.eazybytes.accounts.repository.AccountsRepository;
@@ -31,6 +32,9 @@ class AccountsControllerTest {
 
     @MockBean
     AccountsRepository accountsRepo;
+
+    @MockBean
+    AccountServiceConfig accountServConfig;
 
     Accounts savedAccount;
 
