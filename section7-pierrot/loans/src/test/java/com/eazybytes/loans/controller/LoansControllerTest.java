@@ -1,5 +1,6 @@
 package com.eazybytes.loans.controller;
 
+import com.eazybytes.loans.config.LoansServiceConfig;
 import com.eazybytes.loans.model.Customer;
 import com.eazybytes.loans.model.Loans;
 import com.eazybytes.loans.repository.LoansRepository;
@@ -32,6 +33,9 @@ class LoansControllerTest {
 
     @MockBean
     LoansRepository loansRepo;
+
+    @MockBean
+    LoansServiceConfig loansServConfig;
 
     Loans loan1, loan2;
 
