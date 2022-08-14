@@ -1,5 +1,6 @@
 package com.eazybytes.cards.controller;
 
+import com.eazybytes.cards.config.CardsServiceConfig;
 import com.eazybytes.cards.model.Cards;
 import com.eazybytes.cards.model.Customer;
 import com.eazybytes.cards.repository.CardsRepository;
@@ -31,6 +32,9 @@ class CardsControllerTest {
 
     @MockBean
     CardsRepository cardsRepo;
+
+    @MockBean
+    CardsServiceConfig cardsServiceConfig;
 
     Cards card1, card2;
 
