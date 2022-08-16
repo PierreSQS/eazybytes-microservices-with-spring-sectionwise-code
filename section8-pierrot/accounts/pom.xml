@@ -38,10 +38,10 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
-		<!-- TO LINK TO EUREKA SERVER -->
+		<!-- TO LINK TO EUREKA SERVER AS CLIENT -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-netflix-eureka-client</artifactId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
 		<!-- FOR ACTUATOR WILL BE DISCUSSED IN LATER LECTURES -->
