@@ -23,9 +23,10 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<!-- THIS DEPENDENCY SETS THIS SERVER TO A CLIENT, E.G. A CLIENT TO THE CONFIG SERVER -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-config-server</artifactId>
+			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -55,6 +56,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>eazybytes/${project.artifactId}</name>
+					</image>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
