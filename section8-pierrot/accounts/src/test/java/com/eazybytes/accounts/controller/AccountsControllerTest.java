@@ -4,6 +4,8 @@ import com.eazybytes.accounts.config.AccountServiceConfig;
 import com.eazybytes.accounts.model.Accounts;
 import com.eazybytes.accounts.model.Customer;
 import com.eazybytes.accounts.repository.AccountsRepository;
+import com.eazybytes.accounts.service.client.CardsFeignClient;
+import com.eazybytes.accounts.service.client.LoansFeignClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,12 @@ class AccountsControllerTest {
 
     @MockBean
     AccountServiceConfig accountServConfig;
+
+    @MockBean
+    CardsFeignClient cardsFeignClient;
+
+    @MockBean
+    LoansFeignClient loansFeignClient;
 
     Accounts savedAccount;
 
