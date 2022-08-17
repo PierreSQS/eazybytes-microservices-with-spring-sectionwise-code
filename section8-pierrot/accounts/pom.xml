@@ -44,7 +44,7 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!-- FOR ACTUATOR WILL BE DISCUSSED IN LATER LECTURES -->
+		<!-- TO CONNECT TO OTHER µSERVICES AS CLIENT -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
