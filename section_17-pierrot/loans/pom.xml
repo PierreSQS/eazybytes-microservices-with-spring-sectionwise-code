@@ -14,7 +14,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>loans</name>
-	<description>Sec13-Chap111:Microservice for Loans</description>
+	<description>Sect17:Microservice for Loans</description>
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.2</spring-cloud.version>
@@ -93,7 +93,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>eazybytes/${project.artifactId}</name>
+						<name>pierrotadesso/${project.artifactId}</name>
 					</image>
 				</configuration>
 			</plugin>
