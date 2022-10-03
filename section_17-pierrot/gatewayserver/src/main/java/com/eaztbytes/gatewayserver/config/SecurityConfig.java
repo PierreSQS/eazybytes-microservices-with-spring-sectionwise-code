@@ -17,6 +17,7 @@ public class SecurityConfig {
                         exchanges.pathMatchers("/eazybank/accounts/**").authenticated()
                                 .pathMatchers("/eazybank/cards/**").authenticated()
                                 .pathMatchers("/eazybank/loans/**").permitAll())
+                // sets this server as Oauth2 Resource Server with JWT-Tokens
                 .oauth2ResourceServer().jwt();
 
         httpSecurity.csrf().disable();

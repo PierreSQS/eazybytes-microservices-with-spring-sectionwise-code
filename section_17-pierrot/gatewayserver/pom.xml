@@ -57,14 +57,17 @@
 		</dependency>
 
 		<!-- DEPENDENCIES FOR THE CONNECTION WITH THE KEYCLOAK AUTH SERVER -->
+		<!-- for spring security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<!-- sets this server as a Oauth2-Resource server -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-resource-server</artifactId>
 		</dependency>
+		<!-- for using jwt-token -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-jose</artifactId>
