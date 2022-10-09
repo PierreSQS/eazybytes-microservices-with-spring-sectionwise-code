@@ -2,6 +2,6 @@ global:
   configMapName: eazybankdev-configmap
   zipkinBaseURL: http://zipkin:9411/
   activeProfile: dev
-  configServerURL: configserver:http://configserver:8071/
+  configServerURL: optional:configserver:http://configserver:8071/
   eurekaServerURL: http://eurekaserver:8070/eureka/
   keyCloakURL: http://keycloak1902:80/realms/EazyBank-Realm/protocol/openid-connect/certs
