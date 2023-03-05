@@ -30,11 +30,11 @@ spec:
               key: SPRING_PROFILES_ACTIVE
         {{- end }}
         {{- if .Values.zipkin_enabled }}
-        - name: SPRING_ZIPKIN_BASEURL
+        - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
           valueFrom: 
             configMapKeyRef:
               name: {{ .Values.global.configMapName }}
-              key: SPRING_ZIPKIN_BASEURL
+              key: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
         {{- end }}
         {{- if .Values.config_enabled }}
         - name: SPRING_CONFIG_IMPORT

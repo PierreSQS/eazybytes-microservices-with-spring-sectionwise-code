@@ -8,13 +8,9 @@ inside our microservices network.
 
 **Key steps:**
 - Go to https://start.spring.io/
-- Fill all the details required to generate a **gatewayserver** Spring Boot project and add dependencies **Spring Cloud Routing**,**Spring Boot Actuator**, **Eureka Discovery
-  Client**, **Config Client**, **Spring Boot DevTools**.
-  Click GENERATE which will download the **gatewayserver** maven project in a zip format
+- Fill all the details required to generate a **gatewayserver** Spring Boot project and add dependencies **Spring Cloud Routing**,**Spring Boot Actuator**, **Eureka Discovery Client**, **Config Client**, **Spring Boot DevTools**. Click GENERATE which will download the **gatewayserver** maven project in a zip format
 - Extract the downloaded maven project of **gatewayserver** and import the same into Eclipse by following the steps mentioned in the course
-- Visit pom.xml of **gatewayserver** and make sure all the required dependencies are present in it. Add **spring-boot-maven-plugin** plugin details along with docker image name
-  details inside like we discussed in the course. This extra **spring-boot-maven-plugin** details will help us to generate a docker image using **Buildpacks** easily. Finally 
-  your pom.xml should looks like shown below,
+- Visit pom.xml of **gatewayserver** and make sure all the required dependencies are present in it. Add **spring-boot-maven-plugin** plugin details along with docker image name details inside like we discussed in the course. This extra **spring-boot-maven-plugin** details will help us to generate a docker image using **Buildpacks** easily. Finally your pom.xml should looks like shown below,
 
 ### gatewayserver\pom.xml
 
@@ -27,7 +23,7 @@ inside our microservices network.
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -36,8 +32,8 @@ inside our microservices network.
 	<name>gatewayserver</name>
 	<description>Spring Boot project for Spring Cloud Gateway</description>
 	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -93,11 +89,10 @@ inside our microservices network.
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
 ```
-- Open the SpringBoot main class **GatewayserverApplication.java** . We can always identify the main class in a Spring Boot project by looking for the annotation 
-  **@SpringBootApplication**. On top of this main class, please add annotation **'@EnableEurekaClient'**. Add a routing configurations by creating a @Bean **RouteLocator**
-  like we discussed in the course. After making the changes your **GatewayserverApplication.java** class should like below,
+- Open the SpringBoot main class **GatewayserverApplication.java** . We can always identify the main class in a Spring Boot project by looking for the annotation **@SpringBootApplication**. Add a routing configurations by creating a @Bean **RouteLocator** like we discussed in the course. After making the changes your **GatewayserverApplication.java** class should like below,
 
 ### \gatewayserver\src\main\java\com\eaztbytes\gatewayserver\GatewayserverApplication.java
 
@@ -110,11 +105,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@EnableEurekaClient
 public class GatewayserverApplication {
 
 	public static void main(String[] args) {
@@ -143,8 +136,7 @@ public class GatewayserverApplication {
 
 }
 ```
-- Open the **application.properties** inside **gatewayserver** microservices and make the following entries inside it like we discussed in the course. After making the changes,
-your **application.properties** should like below,
+- Open the **application.properties** inside **gatewayserver** microservices and make the following entries inside it like we discussed in the course. After making the changes, your **application.properties** should like below,
 ### \gatewayserver\src\main\resources\application.properties
 ```
 spring.application.name=gatewayserver
@@ -157,14 +149,14 @@ management.endpoints.web.exposure.include=*
 info.app.name=Gateway Server Microservice
 info.app.description=Eazy Bank Gateway Server Application
 info.app.version=1.0.0
-
+management.info.env.enabled = true
+management.endpoint.gateway.enabled=true
 spring.cloud.gateway.discovery.locator.enabled=true
 spring.cloud.gateway.discovery.locator.lowerCaseServiceId=true
 
 logging.level.com.eaztbytes.gatewayserver: DEBUG
 ```
-- Like we discussed in the course please make sure to create a **gatewayserver.properties** with the below content inside the location where your Config Server is reading the 
-  properties,
+- Like we discussed in the course please make sure to create a **gatewayserver.properties** with the below content inside the location where your Config Server is reading the properties,
 ### /gatewayserver.properties
 ```
 server.port=8072
@@ -174,18 +166,14 @@ eureka.client.fetchRegistry = true
 eureka.client.serviceUrl.defaultZone = http://localhost:8070/eureka/
 ```
 - Please make sure to start all your microservices except **gatewayserver** in the order mentioned in the course.
-- Go to your Spring Boot main class **GatewayserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application successfully 
-  at port 8072 which is the port we configured inside **gatewayserver.properties**. Your can confirm the same by looking at the console logs.
-- Access the URL http://localhost:8072/eazybank/accounts/myCusomerDetails through Postman by passing the below request in JSON format. You should get the response 
-  from the accounts microservices which has all the details related to account, loans and cards. Also validate if you received custom header **X-Response-Time**
-  that we created in the response.
+- Go to your Spring Boot main class **GatewayserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application successfully at port 8072 which is the port we configured inside **gatewayserver.properties**. Your can confirm the same by looking at the console logs.
+- Access the URL http://localhost:8072/eazybank/accounts/myCusomerDetails through Postman by passing the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards. Also validate if you received custom header **X-Response-Time** that we created in the response.
   ```json
   {
     "customerId": 1
   }
   ```
-- In order to implement cross cutting concerns inside your microservices, like we discussed in the course, please create the classes **TraceFilter.java**, 
-  **ResponseTraceFilter.java**, **FilterUtility.java**. They all should look like below,
+- In order to implement cross cutting concerns inside your microservices, like we discussed in the course, please create the classes **TraceFilter.java**, **ResponseTraceFilter.java**, **FilterUtility.java**. They all should look like below,
 ### \gatewayserver\src\main\java\com\eaztbytes\gatewayserver\filters\TraceFilter.java
 ```java
 package com.eaztbytes.gatewayserver.filters;
@@ -308,11 +296,8 @@ public class FilterUtility {
 
 }
 ```
-- Like we discussed in the course, update all the important classes like **AccountsController.java, LoansController.java, CardsController.java** to accept the 
-  **@RequestHeader("eazybank-correlation-id") String correlationid** as input inside the method parameters.
-- Restart your **gatewayserver** microservice and invoke the REST API http://localhost:8072/eazybank/accounts/myCusomerDetails through Postman by passing the below request 
-  in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards. Also validate 
-  if you received custom header **eazybank-correlation-id** that we created in the response.
+- Like we discussed in the course, update all the important classes like **AccountsController.java, LoansController.java, CardsController.java** to accept the **@RequestHeader("eazybank-correlation-id") String correlationid** as input inside the method parameters.
+- Restart your **gatewayserver** microservice and invoke the REST API http://localhost:8072/eazybank/accounts/myCusomerDetails through Postman by passing the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards. Also validate if you received custom header **eazybank-correlation-id** that we created in the response.
   ```json
   {
     "customerId": 1
@@ -695,12 +680,8 @@ services:
 networks:
   eazybank:
 ```
--  Based on the active profile that you want start the microservices, open the command line tool where the **docker-compose.yml** is present and run the docker compose command 
-   **"docker-compose up"** to start all the microservices containers with a single command. All the running containers can be validated by running a docker command 
-   **"docker ps"**.
--  To test the Spring Cloud Gateway changes, invoke the REST API http://localhost:8072/eazybank/accounts/myCusomerDetails through Postman by passing the below request 
-  in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards. Also validate 
-  if you received custom headers **X-Response-Time, eazybank-correlation-id** that we created in the response.
+-  Based on the active profile that you want start the microservices, open the command line tool where the **docker-compose.yml** is present and run the docker compose command **"docker-compose up"** to start all the microservices containers with a single command. All the running containers can be validated by running a docker command **"docker ps"**.  
+-  To test the Spring Cloud Gateway changes, invoke the REST API http://localhost:8072/eazybank/accounts/myCusomerDetails through Postman by passing the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards. Also validate if you received custom headers **X-Response-Time, eazybank-correlation-id** that we created in the response.
   ```json
   {
     "customerId": 1

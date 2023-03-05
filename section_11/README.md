@@ -1,23 +1,33 @@
-### Implementing Distributed tracing & Log Aggregation inside microservices network using Spring Cloud Sleuth, Zipkin
+### Implementing Distributed tracing & Log Aggregation inside microservices network using Spring Cloud Sleuth/micrometer, Zipkin
 ---
 
-**Description:** This repository has six maven projects with the names **accounts, loans, cards, configserver, eurekaserver, gatewayserver** which are continuation from the 
-section10 repository. All these microservices will be updated in this section to implement distributed tracing & log aggregation inside microservices network using **Spring Cloud 
-Sleuth, Zipkin**. Below are the key steps that are followed inside this **section11** where we focused on set up of **Distributed tracing & Log Aggregation** 
-inside our microservices network.
+**Description:** This repository has six maven projects with the names **accounts, loans, cards, configserver, eurekaserver, gatewayserver** which are continuation from the section10 repository. All these microservices will be updated in this section to implement distributed tracing & log aggregation inside microservices network using **Spring Cloud Sleuth/micrometer, Zipkin**. Below are the key steps that are followed inside this **section11** where we focused on set up of **Distributed tracing & Log Aggregation** inside our microservices network.
 
 **Key steps:**
-- Open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below required dependency of 
-  **Spring Cloud Sleuth** in all of them. 
+- Open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below required dependency of **Spring Cloud Sleuth** in all of them. But please note this will work only if you are using Spring Cloud version which is less
+than 2022.0.0
 ```xml
 <dependency>
   <groupId>org.springframework.cloud</groupId>
   <artifactId>spring-cloud-starter-sleuth</artifactId>
 </dependency>
 ```
-- Open the **AccountsController.java, LoansController.java , CardsController.java** and add the logger statements like we discussed in the course. This logger statements
-  will help us to understand and validate how **Spring Cloud Sleuth** is going to add **App name, Trace ID, Span ID** information to the loggers inside the microservices.
-  After making the changes your **AccountsController.java, LoansController.java , CardsController.java** should look like shown below,
+- From Spring Cloud 2022.0.0 & Spring Boot 3, the Sleuth project has been removed & the core of this project has moved to Micrometer Tracing. For more details, please refer GitHub & micrometer website (https://micrometer.io/docs/tracing). In case if you are using micrometer, please add the below maven dependencies inside pom.xml of all the projects
+```xml
+<dependency>
+    <groupId>io.github.openfeign</groupId>
+    <artifactId>feign-micrometer</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-tracing-bridge-otel</artifactId>
+</dependency>
+```
+- Open the **AccountsController.java, LoansController.java , CardsController.java** and add the logger statements like we discussed in the course. This logger statements will help us to understand and validate how **Spring Cloud Sleuth/Micrometer** is going to add **App name, Trace ID, Span ID** information to the loggers inside the microservices. After making the changes your **AccountsController.java, LoansController.java , CardsController.java** should look like shown below,
   
 ### \accounts\src\main\java\com\eazybytes\accounts\controller\AccountsController.java
   
@@ -282,24 +292,35 @@ public class CardsController {
     "customerId": 1
   }
   ```
- - Now in order to use distributed tracing using **Zipkin**, run the docker command **'docker run -d -p 9411:9411 openzipkin/zipkin'**. This docker command will start the
-   zipkin docker container using the provided docker image.
- - To validate if the zipkin server started successfully or not, visit the URL http://localhost:9411/zipkin inside your browser. You should be able to see the zipkin home
-   page.
+ - Now in order to use distributed tracing using **Zipkin**, run the docker command **'docker run -d -p 9411:9411 openzipkin/zipkin'**. This docker command will start the zipkin docker container using the provided docker image.
+ - To validate if the zipkin server started successfully or not, visit the URL http://localhost:9411/zipkin inside your browser. You should be able to see the zipkin home page.
  - Stop all the microservices that are previously started in order to update them with zipkin related changes.
- - Open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below required dependency of 
-  **Zipkin** in all of them. 
+ - Open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below required dependency of **Zipkin** in all of them if you are using Spring Cloud Sleuth. 
   ```xml
    <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-sleuth-zipkin</artifactId>
    </dependency>
   ```
-- Open the **application.properties** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below 
-  properties/configurations in all of them.
+- Otherwise, if you are using micrometer, then please add below required dependency of **Zipkin**
+  ```xml
+   <dependency>
+    <groupId>io.opentelemetry</groupId>
+    <artifactId>opentelemetry-exporter-zipkin</artifactId>
+   </dependency>
   ```
+- Open the **application.properties** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below properties/configurations in all of them based on if you are using Sleuth or Micrometer.
+  ```
+  # Micrometer related properties
+  management.tracing.sampling.probability=1.0
+  management.zipkin.tracing.endpoint=http://localhost:9411/api/v2/spans
+  management.metrics.distribution.percentiles-histogram.http.server.requests=true
+  logging.pattern.level=%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]
+
+  # Sleuth related properties
   spring.sleuth.sampler.percentage=1
   spring.zipkin.baseUrl=http://localhost:9411/
+
   ```
 - Start all the microservices in the order of **configserver, eurekaserver, accounts, loans, cards, gatewayserver**.
 - Once all the microservices are started, access the URL http://localhost:8072/accounts/myCusomerDetails through Postman by passing the below request in JSON format. 
@@ -310,7 +331,8 @@ public class CardsController {
   }
   ```
 - Stop all the microservices that are previously started in order to update them with Rabbit MQ related changes.
-- Now in order to push all the loggers into Rabbit MQ asynchronously, open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver,           gatewayserver** and make sure to add the below required dependency of **Rabbit MQ** in all of them. 
+- Now in order to push all the loggers into Rabbit MQ asynchronously, open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver, gatewayserver** and make sure to add the below required dependency of **Rabbit MQ** in all of them. But please note that 
+this will work only with Sleuth. In case if you are using micrometer, it doesn't support pushing loggers into Rabbit MQ asynchronously as of now.
   ```xml
    <dependency>	
 	<groupId>org.springframework.amqp</groupId>
@@ -368,7 +390,8 @@ services:
       - zipkin
     environment:
       SPRING_PROFILES_ACTIVE: default
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
@@ -388,7 +411,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
   accounts:
     image: eazybytes/accounts:latest
@@ -410,7 +434,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
   
   loans:
     image: eazybytes/loans:latest
@@ -432,7 +457,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     
   cards:
     image: eazybytes/cards:latest
@@ -454,7 +480,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
    
   gatewayserver:
     image: eazybytes/gatewayserver:latest
@@ -479,7 +506,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
 networks:
   eazybank:
@@ -509,7 +537,8 @@ services:
       - zipkin
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
@@ -529,7 +558,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
   accounts:
     image: eazybytes/accounts:latest
@@ -551,7 +581,8 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
   
   loans:
     image: eazybytes/loans:latest
@@ -573,7 +604,8 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     
   cards:
     image: eazybytes/cards:latest
@@ -595,7 +627,8 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
   
   gatewayserver:
     image: eazybytes/gatewayserver:latest
@@ -620,7 +653,8 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     
 networks:
   eazybank:
@@ -650,7 +684,8 @@ services:
       - zipkin
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
@@ -670,7 +705,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
   accounts:
     image: eazybytes/accounts:latest
@@ -692,7 +728,8 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
   
   loans:
     image: eazybytes/loans:latest
@@ -714,7 +751,8 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     
   cards:
     image: eazybytes/cards:latest
@@ -736,7 +774,8 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
   
   gatewayserver:
     image: eazybytes/gatewayserver:latest
@@ -761,14 +800,14 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
 networks:
   eazybank:
 ```
 - Based on the active profile that you want start the microservices, open the command line tool where the docker-compose.yml is present and run the docker compose command **"docker-compose up"** to start all the microservices containers with a single command. All the running containers can be validated by running a docker command **"docker ps"**.
-- To test the distributed tracing changes along with log aggregation, access the URL http://localhost:8072/accounts/myCusomerDetails through Postman by passing the below 
-  request in JSON format. You should be able to see the tracing details inside zipkin console like we discussed in the course.
+- To test the distributed tracing changes along with log aggregation, access the URL http://localhost:8072/accounts/myCusomerDetails through Postman by passing the below request in JSON format. You should be able to see the tracing details inside zipkin console like we discussed in the course.
   ```json
   {
     "customerId": 1
@@ -777,5 +816,5 @@ networks:
 - Stop all the running containers by executing the docker compose command "docker-compose down" from the location where docker-compose.yml is present.
 
 ---
-### HURRAY !!! Congratulations, you successfully implemented Distributed tracing & Log Aggregation inside microservices network using Spring Cloud Sleuth, Zipkin
+### HURRAY !!! Congratulations, you successfully implemented Distributed tracing & Log Aggregation inside microservices network using Spring Cloud Sleuth/Micrometer, Zipkin
 ---

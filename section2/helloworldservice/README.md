@@ -10,17 +10,16 @@
 - Visit **pom.xml** and make sure all the required dependencies are present in it like shown below,
 ### /pom.xml
 
-  ```xml
-  <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>3.0.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eazybytes</groupId>
 	<artifactId>helloworldservice</artifactId>
@@ -28,7 +27,7 @@
 	<name>helloworldservice</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -57,6 +56,7 @@
 	</build>
 
 </project>
+
 ```	
 -  Make sure all the required and associated libraries are downloaded under maven dependencies
 -  Open the SpringBoot main class **HelloworldserviceApplication.java** . We can always identify the main class in a Spring Boot project by looking for the annotation **@SpringBootApplication**

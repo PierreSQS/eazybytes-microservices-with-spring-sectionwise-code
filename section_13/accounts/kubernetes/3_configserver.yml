@@ -20,11 +20,11 @@ spec:
         ports:
         - containerPort: 8071
         env:
-        - name: SPRING_ZIPKIN_BASEURL
+        - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
           valueFrom: 
             configMapKeyRef:
               name: eazybank-configmap
-              key: SPRING_ZIPKIN_BASEURL
+              key: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
         - name: SPRING_PROFILES_ACTIVE
           valueFrom: 
             configMapKeyRef:

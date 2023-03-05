@@ -9,9 +9,8 @@ this **section8** where we focused on set up of **Eureka Server** inside our mic
 - Fill all the details required to generate a **eurekaserver** Spring Boot project and add dependencies **Eureka Server**,**Spring Boot Actuator**, **Config Client**. 
   Click GENERATE which will download the **eurekaserver** maven project in a zip format
 - Extract the downloaded maven project of **eurekaserver** and import the same into Eclipse by following the steps mentioned in the course
-- Visit **pom.xml** of **eurekaserver** and make sure all the required dependencies are present in it. Add **ribbon** to the exclusions list, **spring-boot-maven-plugin** 
-  plugin details along with docker image name details inside it like we discussed in the course. This extra **spring-boot-maven-plugin** details will help us to generate a 
-  docker image using Buildpacks easily. Please note if you are using a Spring Boot version of >=2.5 then mentioning **ribbon** to the exclusions list is not required.
+- Visit **pom.xml** of **eurekaserver** and make sure all the required dependencies are present in it. Add **spring-boot-maven-plugin** 
+  plugin details along with docker image name details inside it like we discussed in the course. This extra **spring-boot-maven-plugin** details will help us to generate a docker image using Buildpacks easily. Please note if you are using a Spring Boot version of >=2.5 then mentioning **ribbon** to the exclusions list is not required.
   Finally your pom.xml should looks like shown below,
 
 ### eurekaserver\pom.xml
@@ -25,7 +24,7 @@ this **section8** where we focused on set up of **Eureka Server** inside our mic
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -34,8 +33,8 @@ this **section8** where we focused on set up of **Eureka Server** inside our mic
 	<name>eurekaserver</name>
 	<description>Service Discovery for Bank Microservices</description>
 	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -49,16 +48,6 @@ this **section8** where we focused on set up of **Eureka Server** inside our mic
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.cloud</groupId>
-					<artifactId>spring-cloud-starter-ribbon</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.netflix.ribbon</groupId>
-					<artifactId>ribbon-eureka</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -93,10 +82,9 @@ this **section8** where we focused on set up of **Eureka Server** inside our mic
 	</build>
 
 </project>
+
 ```
--  Open the SpringBoot main class **EurekaserverApplication.java** . We can always identify the main class in a Spring Boot project by looking for the annotation 
-   **@SpringBootApplication**. On top of this main class, please add annotation **'@EnableEurekaServer'**. This annotation will make your microservice to act as a 
-   Spring Cloud Netflix Eureka Server. After making the changes your **EurekaserverApplication.java** class should like below,
+-  Open the SpringBoot main class **EurekaserverApplication.java** . We can always identify the main class in a Spring Boot project by looking for the annotation **@SpringBootApplication**. On top of this main class, please add annotation **'@EnableEurekaServer'**. This annotation will make your microservice to act as a Spring Cloud Netflix Eureka Server. After making the changes your **EurekaserverApplication.java** class should like below,
 
 ### \src\main\java\com\eaztbytes\eurekaserver\EurekaserverApplication.java
 
@@ -117,14 +105,11 @@ public class EurekaserverApplication {
 
 }
 ```
-- Open the **application.properties** inside **eurekaserver** microservices and make the following entries inside it like we discussed in the course. These entries will help
-  in connecting to the Config Server and to disable the **ribbon** features. Please note if you are using a Spring Boot version of >=2.5 then providing **ribbon** 
-  configurations is not required. After making the changes, your **application.properties** should like below,
+- Open the **application.properties** inside **eurekaserver** microservices and make the following entries inside it like we discussed in the course. These entries will help in connecting to the Config Server and to disable the **ribbon** features. Please note if you are using a Spring Boot version of >=2.5 then providing **ribbon** configurations is not required. After making the changes, your **application.properties** should like below,
 ### \src\main\resources\application.properties
 ```
 spring.application.name=eurekaserver
 spring.config.import=optional:configserver:http://localhost:8071
-spring.cloud.loadbalancer.ribbon.enabled=false
 ```
 - Like we discussed in the course please make sure to create a **eurekaserver.properties** with the below content inside the location where your Config Server is reading the 
   properties,
@@ -143,12 +128,12 @@ eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${server
 - In order to make your **accounts** microservice to connect with **eurekaserver**, add the below dependencies inside accounts **pom.xml** like we discussed inside the course,
 ```xml
     <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-openfeign</artifactId>
     </dependency>
 ```
 - Open the **application.properties** inside **accounts** microservices and add the below entries inside it which will help in integrating with **eurekaserver**
@@ -163,21 +148,19 @@ eureka.client.serviceUrl.defaultZone = http://localhost:8070/eureka/
 info.app.name=Accounts Microservice
 info.app.description=Eazy Bank Accounts Application
 info.app.version=1.0.0
+management.info.env.enabled = true
 
 endpoints.shutdown.enabled=true
 management.endpoint.shutdown.enabled=true
 ```
--  Go to your Spring Boot main class **AccountsApplication.java** and right click-> Run As -> Java Application. This will start your **accounts** microservice successfully 
-   at port 8080 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
-- Access the Eureka Server Dashboard URL http://localhost:8070 inside your browser and make sure that you are able to see that **accounts** microservice details on
-  the Eureka Dashboard home page.
-- In order to make your **loans, cards** microservice to connect with **eurekaserver**, add the below dependency inside loans, cards **pom.xml** like we discussed inside 
-  the course,
+-  Go to your Spring Boot main class **AccountsApplication.java** and right click-> Run As -> Java Application. This will start your **accounts** microservice successfully at port 8080 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
+- Access the Eureka Server Dashboard URL http://localhost:8070 inside your browser and make sure that you are able to see that **accounts** microservice details on the Eureka Dashboard home page.
+- In order to make your **loans, cards** microservice to connect with **eurekaserver**, add the below dependency inside loans, cards **pom.xml** like we discussed inside the course,
 ```xml
     <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
 ```
 - Open the **application.properties** inside **loans** microservices and add the below entries inside it which will help in integrating with **eurekaserver**
 ### \loans\src\main\resources\application.properties
@@ -191,6 +174,7 @@ eureka.client.serviceUrl.defaultZone = http://localhost:8070/eureka/
 info.app.name=Loans Microservice
 info.app.description=Eazy Bank Loans Application
 info.app.version=1.0.0
+management.info.env.enabled = true
 
 endpoints.shutdown.enabled=true
 management.endpoint.shutdown.enabled=true
@@ -207,20 +191,16 @@ eureka.client.serviceUrl.defaultZone = http://localhost:8070/eureka/
 info.app.name=Cards Microservice
 info.app.description=Eazy Bank Cards Application
 info.app.version=1.0.0
+management.info.env.enabled = true
 
 endpoints.shutdown.enabled=true
 management.endpoint.shutdown.enabled=true
 ```
--  Go to your Spring Boot main class **LoansApplication.java** and right click-> Run As -> Java Application. This will start your **loans** microservice successfully 
-   at port 8090 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
--  Go to your Spring Boot main class **CardsApplication.java** and right click-> Run As -> Java Application. This will start your **cards** microservice successfully 
-   at port 9000 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
-- Access the Eureka Server Dashboard URL http://localhost:8070 inside your browser and make sure that you are able to see that **loans, cards** microservices details on
-  the Eureka Dashboard home page.
-- In order to set up Client side load balancing using **Feign client**, add **@EnableFeignClients** annotation on top of **AccountsApplication.java** class
-  which is present inside **accounts** microservice.
-- Like discussed in the course, create two interfaces with the name **LoansFeignClient.java**,**CardsFeignClient.java** inside **accounts** microservice project. 
-  These two interfaces and the methods inside them will help to communicate with **loans** and **cards** microservices using Feign client from **accounts** microservice.
+-  Go to your Spring Boot main class **LoansApplication.java** and right click-> Run As -> Java Application. This will start your **loans** microservice successfully at port 8090 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
+-  Go to your Spring Boot main class **CardsApplication.java** and right click-> Run As -> Java Application. This will start your **cards** microservice successfully at port 9000 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
+- Access the Eureka Server Dashboard URL http://localhost:8070 inside your browser and make sure that you are able to see that **loans, cards** microservices details on the Eureka Dashboard home page.
+- In order to set up Client side load balancing using **Feign client**, add **@EnableFeignClients** annotation on top of **AccountsApplication.java** class which is present inside **accounts** microservice.
+- Like discussed in the course, create two interfaces with the name **LoansFeignClient.java**,**CardsFeignClient.java** inside **accounts** microservice project. These two interfaces and the methods inside them will help to communicate with **loans** and **cards** microservices using Feign client from **accounts** microservice.
   These two interfaces should like below,
 ### \accounts\src\main\java\com\eazybytes\accounts\service\client\LoansFeignClient.java
 ```java
@@ -264,8 +244,7 @@ public interface CardsFeignClient {
 	List<Cards> getCardDetails(@RequestBody Customer customer);
 }
 ```
-- In order to fetch the cards and loans details using Feign client from accounts microservice, update the **AccountsController.java** to expose a new REST API 
-  **/myCustomerDetails** like we discussed inside the course. Your **AccountsController.java** should look like below,
+- In order to fetch the cards and loans details using Feign client from accounts microservice, update the **AccountsController.java** to expose a new REST API **/myCustomerDetails** like we discussed inside the course. Your **AccountsController.java** should look like below,
 ### \accounts\src\main\java\com\eazybytes\accounts\controller\AccountsController.java
 ```java
 /**
@@ -448,8 +427,7 @@ public class CustomerDetails {
 
 }
 ```
-- Restart the **accounts** microservice and test the feign client changes done by invoking the endpoint  http://localhost:8080/myCustomerDetails through Postman by passing 
-  the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards.
+- Restart the **accounts** microservice and test the feign client changes done by invoking the endpoint     http://localhost:8080/myCustomerDetails through Postman by passing the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards.
   ```json
   {
     "customerId": 1
@@ -759,12 +737,8 @@ networks:
   eazybank:
 ```
 -  Stop any running microservices inside your eclipse
--  Based on the active profile that you want start the microservices, open the command line tool where the **docker-compose.yml** is present and run the docker compose command 
-   **"docker-compose up"** to start all the microservices containers with a single command. All the running containers can be validated by running a docker command 
-   **"docker ps"**.
--  To validate if individual microservices like **accounts, loans & cards** are able to register themselves with **eurekaserver**, invoke the Eureka Dashboard URL
-   http://localhost:8070 through browser and validate the same. To test the feign client changes, invoke the endpoint  http://localhost:8080/myCustomerDetails through Postman 
-   by passing the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards.
+-  Based on the active profile that you want start the microservices, open the command line tool where the **docker-compose.yml** is present and run the docker compose command **"docker-compose up"** to start all the microservices containers with a single command. All the running containers can be validated by running a docker command **"docker ps"**.
+-  To validate if individual microservices like **accounts, loans & cards** are able to register themselves with **eurekaserver**, invoke the Eureka Dashboard URL http://localhost:8070 through browser and validate the same. To test the feign client changes, invoke the endpoint  http://localhost:8080/myCustomerDetails through Postman by passing the below request in JSON format. You should get the response from the accounts microservices which has all the details related to account, loans and cards.
 ```json
 {
     "customerId": 1

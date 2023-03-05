@@ -22,7 +22,7 @@ your pom.xml should looks like shown below,
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -31,8 +31,8 @@ your pom.xml should looks like shown below,
 	<name>configserver</name>
 	<description>Configuration Server for Bank Microservices</description>
 	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -111,7 +111,7 @@ spring.cloud.config.server.native.search-locations=classpath:/config
 server.port=8071
 encrypt.key=eazybytes
 ```
--  Go to your Spring Boot main class **ConfigserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application                successfully at port 8071 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
+-  Go to your Spring Boot main class **ConfigserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application successfully at port 8071 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
 - Access the URLs like http://localhost:8071/accounts/default, http://localhost:8071/loans/dev, http://localhost:8071/cards/prod inside your browser to randomly validate the
   properties being exposed by Config Server for all the three microservices **accounts, loans and cards**.
 - Stop the Config Server microservices which started at port 8071 earlier.  
@@ -124,9 +124,8 @@ spring.cloud.config.server.native.search-locations=file:///C://config
 server.port=8071
 encrypt.key=eazybytes
 ```
--  Go to your Spring Boot main class **ConfigserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application                successfully at port 8071 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
-- Access the URLs like http://localhost:8071/accounts/default, http://localhost:8071/loans/dev, http://localhost:8071/cards/prod inside your browser to randomly validate that
-  properties are being read from configured file system by Config Server for all the three microservices **accounts, loans and cards**.
+-  Go to your Spring Boot main class **ConfigserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application successfully at port 8071 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
+- Access the URLs like http://localhost:8071/accounts/default, http://localhost:8071/loans/dev, http://localhost:8071/cards/prod inside your browser to randomly validate that properties are being read from configured file system by Config Server for all the three microservices **accounts, loans and cards**.
 - Stop the Config Server microservices which started at port 8071 earlier.  
 - Create Github repository and upload all the 9 property files related to **accounts, loans and cards** microservices in to it like mentioned in the course. You can refer to https://github.com/eazybytes/microservices-config as a sample reference.
 - Open the **application.properties** inside **configserver** microservices and make the following entries inside it which will help in reading the properties from a given Github repository. 
@@ -140,11 +139,9 @@ spring.cloud.config.server.git.default-label=main
 server.port=8071
 encrypt.key=eazybytes
 ```
--  Go to your Spring Boot main class **ConfigserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application                successfully at port 8071 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
-- Access the URLs like http://localhost:8071/accounts/default, http://localhost:8071/loans/dev, http://localhost:8071/cards/prod inside your browser to randomly validate that
-  properties are being read from configured Github location by Config Server for all the three microservices **accounts, loans and cards**.
-- Now in order to integrate individual microservices **accounts, loans and cards** with **configserver**, please update the **pom.xml** files inside these microservices with
-  **<spring-cloud.version>** details, **spring-cloud-starter-config** dependency, **spring-cloud-dependencies** under **dependencyManagement**. After making the changes, your       pom.xml files should like below. For more details please check the course videos.
+-  Go to your Spring Boot main class **ConfigserverApplication.java** and right click-> Run As -> Java Application. This will start your Spring Boot application successfully at port 8071 which is the port we configured inside **application.properties**. Your can confirm the same by looking at the console logs.
+- Access the URLs like http://localhost:8071/accounts/default, http://localhost:8071/loans/dev, http://localhost:8071/cards/prod inside your browser to randomly validate that properties are being read from configured Github location by Config Server for all the three microservices **accounts, loans and cards**.
+- Now in order to integrate individual microservices **accounts, loans and cards** with **configserver**, please update the **pom.xml** files inside these microservices with **<spring-cloud.version>** details, **spring-cloud-starter-config** dependency, **spring-cloud-dependencies** under **dependencyManagement**. After making the changes, your pom.xml files should like below. For more details please check the course videos.
 	
 ### accounts\pom.xml
 ```xml
@@ -156,7 +153,7 @@ encrypt.key=eazybytes
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -166,8 +163,8 @@ encrypt.key=eazybytes
 	<name>accounts</name>
 	<description>Microservice for Accounts</description>
 	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -236,7 +233,7 @@ encrypt.key=eazybytes
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -246,8 +243,8 @@ encrypt.key=eazybytes
 	<name>loans</name>
 	<description>Microservice for Loans</description>
 	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -321,7 +318,7 @@ encrypt.key=eazybytes
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -331,8 +328,8 @@ encrypt.key=eazybytes
 	<name>cards</name>
 	<description>Microservice for Cards</description>
 	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<java.version>17</java.version>
+		<spring-cloud.version>2022.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -399,7 +396,7 @@ encrypt.key=eazybytes
 -  Make sure all the required and associated libraries are downloaded under maven dependencies of **accounts**, **loans**, **cards** microservices.
 -  Like we discussed in the course, add **@RefreshScope** annotation on top of **AccountsApplication.java, LoansApplication.java and CardsApplication.java**. This is completely
    optional and can be used in the scenarios where we want to refresh the properties loaded into the given microservice with out the need of restart. In order to refresh the 
-   properties we can invoke the POST API **/actuator/refresh** exposed by the actuator through Postman. This refresh API will be exposed only if we configure                        **management.endpoints.web.exposure.include=*** inside **application.properties** like mentioned in the below step.
+   properties we can invoke the POST API **/actuator/refresh** exposed by the actuator through Postman. This refresh API will be exposed only if we configure **management.endpoints.web.exposure.include=*** inside **application.properties** like mentioned in the below step.
 -  Open the **application.properties** present inside **accounts**, **loans**, **cards** microservices and make sure to update the properties related to Config server details 
    inside them. After making the changes, your **application.properties** files should like below. For more details please check the course videos.
 ### \accounts\src\main\resources\application.properties

@@ -16,7 +16,7 @@ public class SecurityConfig {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
 
-        http.authorizeRequests(authorize -> authorize.antMatchers("/sayHello").hasRole("ACCOUNTS")
+        http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/sayHello").hasRole("ACCOUNTS")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
         http.csrf().disable();

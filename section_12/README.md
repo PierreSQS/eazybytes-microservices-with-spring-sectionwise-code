@@ -10,10 +10,6 @@ prometheus, grafana.**
   ```xml
   <dependency>
     <groupId>io.micrometer</groupId>
-    <artifactId>micrometer-core</artifactId>
-  </dependency>
-  <dependency>
-    <groupId>io.micrometer</groupId>
     <artifactId>micrometer-registry-prometheus</artifactId>
   </dependency>
   <dependency>
@@ -258,7 +254,8 @@ services:
       - zipkin
     environment:
       SPRING_PROFILES_ACTIVE: default
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
   eurekaserver:
     image: eazybytes/eurekaserver:latest
@@ -278,7 +275,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
   accounts:
     image: eazybytes/accounts:latest
@@ -300,7 +298,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
   
   loans:
     image: eazybytes/loans:latest
@@ -322,7 +321,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     
   cards:
     image: eazybytes/cards:latest
@@ -344,7 +344,8 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       
   gatewayserver:
     image: eazybytes/gatewayserver:latest
@@ -369,16 +370,15 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      # SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
 networks:
   eazybank:
 ```
-- Open the command line tool where the docker-compose.yml is present and run the docker compose command **"docker-compose up"** to start all the microservices 
-  containers with a single command. All the running containers can be validated by running a docker command **"docker ps"**.
+- Open the command line tool where the docker-compose.yml is present and run the docker compose command **"docker-compose up"** to start all the microservices containers with a single command. All the running containers can be validated by running a docker command **"docker ps"**.
 - Open the URL http://localhost:9090/targets/ inside a browser and validate all the details, graphs present inside prometheus like we discussed in the course.
-- Open the URL http://localhost:3000/login/ inside a browser and enter the login details(**admin/password**) of Grafana like we discussed in the course. Inside Grafana
-  provide prometheus details, build custom dashboards, alerts like we discussed in the course.
+- Open the URL http://localhost:3000/login/ inside a browser and enter the login details(**admin/password**) of Grafana like we discussed in the course. Inside Grafana provide prometheus details, build custom dashboards, alerts like we discussed in the course.
 - Stop all the running containers by executing the docker compose command "docker-compose down" from the location where docker-compose.yml is present.
 
 ---

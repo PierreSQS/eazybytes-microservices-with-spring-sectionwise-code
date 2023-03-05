@@ -22,7 +22,7 @@ taking **EazyBank** as an example Bank application. Below are the key steps that
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -32,6 +32,7 @@ taking **EazyBank** as an example Bank application. Below are the key steps that
 	<name>accounts</name>
 	<description>Microservice for Accounts</description>
 	<properties>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -86,7 +87,7 @@ taking **EazyBank** as an example Bank application. Below are the key steps that
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -96,6 +97,7 @@ taking **EazyBank** as an example Bank application. Below are the key steps that
 	<name>loans</name>
 	<description>Microservice for Loans</description>
 	<properties>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -150,7 +152,7 @@ taking **EazyBank** as an example Bank application. Below are the key steps that
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
+		<version>3.0.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eaztbytes</groupId>
@@ -160,6 +162,7 @@ taking **EazyBank** as an example Bank application. Below are the key steps that
 	<name>cards</name>
 	<description>Microservice for Cards</description>
 	<properties>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -461,9 +464,9 @@ package com.eazybytes.accounts.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -494,11 +497,11 @@ package com.eazybytes.accounts.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -543,11 +546,11 @@ package com.eazybytes.loans.model;
 
 import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -626,11 +629,11 @@ package com.eazybytes.cards.model;
 
 import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -752,16 +755,16 @@ CREATE TABLE `loans` (
 );
 
 INSERT INTO `loans` ( `customer_id`, `start_dt`, `loan_type`, `total_loan`, `amount_paid`, `outstanding_amount`, `create_dt`)
- VALUES ( 1, '2020-10-13', 'Home', 200000, 50000, 150000, '2020-10-13');
+ VALUES ( 1, CURDATE()-250, 'Home', 200000, 50000, 150000, CURDATE()-250);
  
 INSERT INTO `loans` ( `customer_id`, `start_dt`, `loan_type`, `total_loan`, `amount_paid`, `outstanding_amount`, `create_dt`)
- VALUES ( 1, '2020-06-06', 'Vehicle', 40000, 10000, 30000, '2020-06-06');
+ VALUES ( 1, CURDATE()-376, 'Vehicle', 40000, 10000, 30000, CURDATE()-376);
  
 INSERT INTO `loans` ( `customer_id`, `start_dt`, `loan_type`, `total_loan`, `amount_paid`, `outstanding_amount`, `create_dt`)
- VALUES ( 1, '2021-02-14', 'Home', 50000, 10000, 40000, '2018-02-14');
+ VALUES ( 1, CURDATE()-549, 'Home', 50000, 10000, 40000, CURDATE()-549);
 
 INSERT INTO `loans` ( `customer_id`, `start_dt`, `loan_type`, `total_loan`, `amount_paid`, `outstanding_amount`, `create_dt`)
- VALUES ( 1, '2018-02-14', 'Personal', 10000, 3500, 6500, '2018-02-14');
+ VALUES ( 1, CURDATE()-122, 'Personal', 10000, 3500, 6500, CURDATE()-122);
 ```
 ### \cards\src\main\resources\data.sql
 ```sql
@@ -790,7 +793,7 @@ INSERT INTO `cards` (`card_number`, `customer_id`, `card_type`, `total_limit`, `
  VALUES ('2359XXXX9346', 1, 'Credit', 20000, 4000, 16000, CURDATE());
 ```
 -  Go to your Spring Boot main classes and start all the three microservices by right click-> Run As -> Java Application. This will start your microservices successfully at port **8080,8090,9000** based on the ports configured inside **application.properties**. Your can confirm the same by looking at the console logs.
--  Access the URLs of H2 databases of all the three microservices to make sure tables, columns, data is created inside them successfully. The URLs are http://localhost:8080/h2-    console/, http://localhost:8090/h2-console/, http://localhost:9000/h2-console/ respectively.
+-  Access the URLs of H2 databases of all the three microservices to make sure tables, columns, data is created inside them successfully. The URLs are http://localhost:8080/h2-console/, http://localhost:8090/h2-console/, http://localhost:9000/h2-console/ respectively.
 -  Invoke the REST APIs http://localhost:8080/myAccount, http://localhost:8090/myLoans, http://localhost:9000/myCards through Postman by passing the below request in JSON format. You should get the response from the corresponding microservices.
 ```json
 {
