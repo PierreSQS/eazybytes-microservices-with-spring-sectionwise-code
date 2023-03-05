@@ -38,12 +38,7 @@ public class LoansController {
 	@PostMapping("/myLoans")
 	public List<Loans> getLoansDetails(@RequestHeader("eazybank-correlation-id") String correlationid,@RequestBody Customer customer) {
 		System.out.println("Invoking Loans Microservice");
-		List<Loans> loans = loansRepository.findByCustomerIdOrderByStartDtDesc(customer.getCustomerId());
-		if (loans != null) {
-			return loans;
-		} else {
-			return null;
-		}
+		return loansRepository.findByCustomerIdOrderByStartDtDesc(customer.getCustomerId());
 
 	}
 	
