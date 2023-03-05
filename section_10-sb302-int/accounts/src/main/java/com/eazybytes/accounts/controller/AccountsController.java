@@ -53,12 +53,7 @@ public class AccountsController {
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
 
-		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		if (accounts != null) {
-			return accounts;
-		} else {
-			return null;
-		}
+		return accountsRepository.findByCustomerId(customer.getCustomerId());
 
 	}
 	
@@ -89,7 +84,7 @@ public class AccountsController {
 		return customerDetails;
 	}
 	
-	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader("eazybank-correlation-id") String correlationid,Customer customer, Throwable t) {
+	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader("eazybank-correlation-id") String correlationid,Customer customer) {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		List<Loans> loans = loansFeignClient.getLoansDetails(correlationid,customer);
 		CustomerDetails customerDetails = new CustomerDetails();
@@ -105,7 +100,7 @@ public class AccountsController {
 		return "Hello, Welcome to EazyBank";
 	}
 
-	private String sayHelloFallback(Throwable t) {
+	private String sayHelloFallback() {
 		return "Hi, Welcome to EazyBank";
 	}
 
